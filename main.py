@@ -5,6 +5,7 @@ from datetime import datetime, time, timedelta, timezone
 import requests
 from bs4 import BeautifulSoup
 from keep_alive import keep_alive
+import os
 
 load_dotenv()
 
@@ -19,7 +20,7 @@ times = [
     time(hour=20, minute=0, tzinfo=JST)
 ]
 
-@tasks.loop(minutes=times)
+@tasks.loop(time=times)
 async def send_message():
     now = datetime.now(JST)
 
