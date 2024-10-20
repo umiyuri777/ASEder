@@ -50,5 +50,5 @@ async def on_ready():
     print(f'{client.user} 参上！')
     send_message.start()
 
-keep_alive
+keep_alive()
 client.run(os.environ.get("DISCORD_TOKEN"))
