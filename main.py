@@ -51,4 +51,8 @@ async def on_ready():
     send_message.start()
 
 keep_alive()
-client.run(os.environ.get("DISCORD_TOKEN"))
+TOKEN = os.getenv("DISCORD_TOKEN")
+try:
+    client.run(TOKEN)
+except:
+    os.system("kill 1")
