@@ -18,34 +18,30 @@ JST = timezone(timedelta(hours=+9), "JST")
 
 times = [
     time(hour=20, minute=0, tzinfo=JST),
-    time(hour=10, minute=15, tzinfo=JST),
+    time(hour=10, minute=40, tzinfo=JST),
 ]
 
 @tasks.loop(time=times)
 async def send_message():
-    now = datetime.now(JST)
+    # AtCoderからコンテスト情報をスクレイピング
+    response = requests.get('https://atcoder.jp/contests/')
+    soup = BeautifulSoup(response.content, 'html.parser')
+    contest_links = soup.find_all('a', href=True)
 
-    # 土曜日のみ実行
-    if now.weekday() == 5 or now.weekday() == 2:
-        # AtCoderからコンテスト情報をスクレイピング
-        response = requests.get('https://atcoder.jp/contests/')
-        soup = BeautifulSoup(response.content, 'html.parser')
-        contest_links = soup.find_all('a', href=True)
+    atcoder_link = None
+    for link in contest_links:
+        href = link['href']
 
-        atcoder_link = None
-        for link in contest_links:
-            href = link['href']
+        # 最初に見つかった AtCoder Beginner Contest を抽出
+        if '/contests/abc' in href:
+            atcoder_link = f"https://atcoder.jp{href}"
+            break
 
-            # 最初に見つかった AtCoder Beginner Contest を抽出
-            if '/contests/abc' in href:
-                atcoder_link = f"https://atcoder.jp{href}"
-                break
-
-        if atcoder_link:
-            channel = client.get_channel(os.environ.get("DISCORD_CHANNEL_ID"))
-            await channel.send(f'--------テスト送信-------')
-            await channel.send(f'次のAtCoder ABCコンテストはこちら: {atcoder_link}')
-            print("AtCoder ABCリンクを送信しました。")
+    if atcoder_link:
+        channel = client.get_channel(os.environ.get("DISCORD_CHANNEL_ID"))
+        await channel.send(f'--------テスト送信-------')
+        await channel.send(f'次のAtCoder ABCコンテストはこちら: {atcoder_link}')
+        print("AtCoder ABCリンクを送信しました。")
 
 @client.event
 async def on_ready():
