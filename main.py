@@ -17,7 +17,8 @@ client = discord.Client(intents=intents)
 JST = timezone(timedelta(hours=+9), "JST")
 
 times = [
-    time(hour=20, minute=0, tzinfo=JST)
+    time(hour=20, minute=0, tzinfo=JST),
+    time(hour=10, minute=15, tzinfo=JST),
 ]
 
 @tasks.loop(time=times)
@@ -25,7 +26,7 @@ async def send_message():
     now = datetime.now(JST)
 
     # 土曜日のみ実行
-    if now.weekday() == 5:
+    if now.weekday() == 5 or now.weekday() == 2:
         # AtCoderからコンテスト情報をスクレイピング
         response = requests.get('https://atcoder.jp/contests/')
         soup = BeautifulSoup(response.content, 'html.parser')
@@ -42,6 +43,7 @@ async def send_message():
 
         if atcoder_link:
             channel = client.get_channel(os.environ.get("DISCORD_CHANNEL_ID"))
+            await channel.send(f'--------テスト送信-------')
             await channel.send(f'次のAtCoder ABCコンテストはこちら: {atcoder_link}')
             print("AtCoder ABCリンクを送信しました。")
 
