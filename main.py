@@ -43,7 +43,7 @@ async def send_message():
 		if atcoder_link:
 			channel_id=os.environ.get("DISCORD_CHANNEL_ID")
 			channel = client.get_channel(int(channel_id))
-			message = await channel.send(f'【テスト】次のAtCoder ABCコンテストはこちら: {atcoder_link}')
+			message = await channel.send(f'次のAtCoder ABCコンテストはこちら: {atcoder_link}')
 			await message.add_reaction("🔥")
 
 @client.event
