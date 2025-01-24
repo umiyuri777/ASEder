@@ -33,4 +33,4 @@ jobs:
       - name: Build and push Docker image
         run: |
           docker buildx build . -t aseder.azurecr.io/aseder:${{ github.sha }}
-          docker push aseder.azurecr.io/ASEDer:${{ github.sha }}
+          docker push aseder.azurecr.io/aseder:${{ github.sha }}
